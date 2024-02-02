@@ -1,14 +1,15 @@
 {-# LANGUAGE Arrows #-}
 
-module Study.Kleisli where
-import Control.Arrow (Kleisli(..), (***))
+module Kleisli where
+
+import Control.Arrow (Kleisli (..), (***))
+import Control.Category ((>>>))
 import Control.Monad.Writer
 import Data.Monoid
-import Control.Category ((>>>))
 
-type DynamicWeighted =  Kleisli (Writer (Sum Int))
+type DynamicWeighted = Kleisli (Writer (Sum Int))
+
 type a ~> b = DynamicWeighted a b
-
 
 grindBeans :: [Bean] ~> GroundCoffee
 grindBeans = Kleisli $ \beans -> do
@@ -31,7 +32,11 @@ makeCoffee' = proc (beans, water) -> do
   brew -< (ground, hotWater)
 
 data Bean
+
 data GroundCoffee
+
 data Water
+
 data HotWater
+
 data Coffee

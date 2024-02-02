@@ -1,11 +1,12 @@
 {-# LANGUAGE Arrows #-}
 
 module Weighted where
-import Control.Category
+
 import Control.Arrow
+import Control.Category
 import Prelude hiding (id)
 
-data a ~> b = Weighted { runWeigthed :: (a -> b), weight :: Integer }
+data a ~> b = Weighted {runWeigthed :: (a -> b), weight :: Integer}
 
 instance Category (~>) where
   id = Weighted id 0
@@ -14,9 +15,10 @@ instance Category (~>) where
 instance Arrow (~>) where
   arr f = Weighted f 0
   Weighted f w *** Weighted g w' = Weighted (f *** g) (w + w')
+
   -- or
   first (Weighted f w) = Weighted (first f) w
-  
+
 grindBeans :: [Bean] ~> GroundCoffee
 grindBeans = Weighted undefined 10
 
@@ -55,23 +57,19 @@ coffee = runWeigthed makeIcedCoffee ([bean], water)
 
 cost = weight makeIcedCoffee
 
+instance ArrowChoice (~>)
 
-instance ArrowChoice (~>) where
-  
 makeCoffeeDynmically :: ([Bean], Water) ~> Either Coffee IcedCoffee
 makeCoffeeDynmically = proc (beans, water) -> do
   ground <- grindBeans -< beans
   (hotWater, ices) <- (boilWater &&& freezeWater) -< water
   coffee <- brew -< (ground, hotWater)
-  if length ices > 0 then
-    returnA -< Left coffee
-  else do
-    Right ^<< putIces -< (ices, coffee)
+  if length ices > 0
+    then returnA -< Left coffee
+    else do
+      Right ^<< putIces -< (ices, coffee)
 
-
-instance ArrowApply (~>) where
-
-
+instance ArrowApply (~>)
 
 makeCoffeeDynamically2 :: ([Bean], Water) ~> Either Coffee IcedCoffee
 makeCoffeeDynamically2 = proc (beans, water) -> do
@@ -79,10 +77,10 @@ makeCoffeeDynamically2 = proc (beans, water) -> do
   ground <- grindBeans' -< beans
   (hotWater, ices) <- (boilWater &&& freezeWater) -< water
   coffee <- brew -< (ground, hotWater)
-  if length ices > 0 then
-    returnA -< Left coffee
-  else do
-    Right ^<< putIces -< (ices, coffee)
+  if length ices > 0
+    then returnA -< Left coffee
+    else do
+      Right ^<< putIces -< (ices, coffee)
 
 chooseBestGrinder :: [Bean] ~> ([Bean] ~> GroundCoffee)
 chooseBestGrinder = undefined
@@ -93,12 +91,18 @@ bean = undefined
 water :: Water
 water = undefined
 
-
 data Bean
+
 data GroundCoffee
+
 data Water
+
 data HotWater
+
 data Coffee
+
 data IcedCoffee
+
 data Ice
+
 data Grinder

@@ -1,4 +1,4 @@
-module Definition1 where
+module Definition2 where
 
 class Category (~>) where
   id :: a ~> a

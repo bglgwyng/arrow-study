@@ -1,9 +1,9 @@
 {-# LANGUAGE Arrows #-}
 
-module Study.FreeArrow where
-  
-import Control.Category
+module FreeArrow where
+
 import Control.Arrow
+import Control.Category
 import Prelude hiding (id)
 
 data Free eff a b where
@@ -20,15 +20,15 @@ instance Arrow (Free eff) where
   arr = Pure
   (***) = Par
 
-someComputation :: Arrow a => a () Int
+someComputation :: (Arrow a) => a () Int
 someComputation = proc _ -> do
   x <- id -< 42
   y <- id -< 42
   z <- id -< y
   id -< (x + y + z)
 
-someComputation' :: Arrow a => a () Int
-someComputation' = 
-  (arr (\_ -> 42) &&& arr (\_ -> 42)) 
+someComputation' :: (Arrow a) => a () Int
+someComputation' =
+  (arr (\_ -> 42) &&& arr (\_ -> 42))
     >>> (id *** arr (\y -> (y, y)))
     >>> arr (\(x, (y, z)) -> x + y + z)
